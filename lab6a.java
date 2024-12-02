@@ -21,12 +21,12 @@ class CoinCombinationTask implements Callable<List<List<Integer>>> {
             return;
         }
 
-        // Include the current coin
+        // Including the current coin
         current.add(coins[index]);
         findCombinations(coins, index, sum - coins[index], current, result);
-        current.remove(current.size() - 1); // Backtrack
+        current.remove(current.size() - 1); // Backtracking
 
-        // Exclude the current coin
+        // Excluding the current coin
         findCombinations(coins, index + 1, sum, current, result);
     }
 
@@ -42,7 +42,7 @@ public class lab6a {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         Scanner sc = new Scanner(System.in);
 
-        // Input
+        
         System.out.print("Enter the number of coins: ");
         int n = sc.nextInt();
 
@@ -59,26 +59,25 @@ public class lab6a {
         ExecutorService executor = Executors.newFixedThreadPool(4);
         List<Future<List<List<Integer>>>> futures = new ArrayList<>();
 
-        // Divide work for each thread
+        // Dividing work for each thread
         for (int i = 0; i < n; i++) {
             futures.add(executor.submit(new CoinCombinationTask(coins, sum, i)));
         }
 
-        // Collect results
+        // Collecting results
         List<List<Integer>> allCombinations = new ArrayList<>();
         for (Future<List<List<Integer>>> future : futures) {
             allCombinations.addAll(future.get());
         }
         executor.shutdown();
 
-        // Remove duplicates
+        // Removing duplicates
         Set<List<Integer>> uniqueCombinations = new HashSet<>();
         for (List<Integer> combination : allCombinations) {
-            Collections.sort(combination); // Normalize order
+            Collections.sort(combination); // 
             uniqueCombinations.add(combination);
         }
 
-        // Output
         System.out.println("Input:");
         System.out.println("N = " + n + ", sum = " + sum);
         System.out.println("coins = " + Arrays.toString(coins));
