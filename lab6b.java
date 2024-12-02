@@ -1,6 +1,5 @@
 import java.util.Random;
 
-// Custom Exception
 class CounterEmptyException extends Exception {
     public CounterEmptyException(String message) {
         super(message);
@@ -12,7 +11,7 @@ class CoffeeCounter {
     private int counter = 0;
     private final int MAX_CAPACITY = 3;
 
-    // Synchronized method for Baristas to add coffee
+  
     public synchronized void addCoffee() throws InterruptedException {
         while (counter == MAX_CAPACITY) {
             System.out.println("Barista is waiting. Counter is full.");
@@ -23,7 +22,6 @@ class CoffeeCounter {
         notifyAll(); // Notify customers and reviewers
     }
 
-    // Synchronized method for Customers to pick up coffee
     public synchronized void pickCoffee(int amount) throws InterruptedException, CounterEmptyException {
         while (counter < amount) {
             System.out.println("Customer is waiting. Counter is empty.");
@@ -34,7 +32,6 @@ class CoffeeCounter {
         notifyAll(); // Notify baristas and reviewers
     }
 
-    // Synchronized method for Reviewer to sample coffee
     public synchronized void sampleCoffee() throws InterruptedException, CounterEmptyException {
         while (counter == 0) {
             System.out.println("Reviewer is waiting. Counter is empty.");
@@ -61,7 +58,7 @@ class Barista extends Thread {
         try {
             for (int i = 0; i < coffeesToPrepare; i++) {
                 counter.addCoffee();
-                Thread.sleep(new Random().nextInt(1000)); // Simulate time to prepare coffee
+                Thread.sleep(new Random().nextInt(1000)); 
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -69,7 +66,6 @@ class Barista extends Thread {
     }
 }
 
-// Customer class (Consumer)
 class Customer extends Thread {
     private final CoffeeCounter counter;
     private final int coffeesToPickUp;
@@ -89,7 +85,6 @@ class Customer extends Thread {
     }
 }
 
-// Reviewer class (Observer)
 class Reviewer extends Thread {
     private final CoffeeCounter counter;
 
@@ -109,22 +104,19 @@ class Reviewer extends Thread {
 
 public class lab6b {
     public static void main(String[] args) {
-        // Initialize coffee counter
+       
         CoffeeCounter counter = new CoffeeCounter();
 
-        // Create and start Baristas
-        Barista barista1 = new Barista(counter, 2); // Barista 1 prepares 2 coffees
-        Barista barista2 = new Barista(counter, 3); // Barista 2 prepares 3 coffees
+        
+        Barista barista1 = new Barista(counter, 2);
+        Barista barista2 = new Barista(counter, 3); 
 
-        // Create and start Customers
-        Customer customer1 = new Customer(counter, 1); // Customer 1 picks 1 coffee
-        Customer customer2 = new Customer(counter, 2); // Customer 2 picks 2 coffees
-        Customer customer3 = new Customer(counter, 1); // Customer 3 picks 1 coffee
+        Customer customer1 = new Customer(counter, 1); 
+        Customer customer2 = new Customer(counter, 2); 
+        Customer customer3 = new Customer(counter, 1); 
 
-        // Create and start Coffee Reviewer
         Reviewer reviewer = new Reviewer(counter);
 
-        // Start all threads
         barista1.start();
         barista2.start();
         customer1.start();
